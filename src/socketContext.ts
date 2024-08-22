@@ -233,94 +233,117 @@ export const handleMessage = (rawData, currentData : State) : State => {
     let data = {};
 
     if(rawData.R){
-        data = rawData.R
+        data = rawData.R;
     }else if(rawData.M){
         //TO HANDLE
         rawData.M.forEach(element => {
-            data[element.A[0]] = element.A[1]
+            data[element.A[0]] = element.A[1];
         });
     }
 
-    let parsedData : State = currentData
+    let parsedData : State = currentData;
 
     if (data["CarData.z"]) {
-        parsedData.carsData = inflate(data["CarData.z"]) as CarsTelemetry
+        parsedData.carsData = inflate(data["CarData.z"]) as CarsTelemetry;
     }
     if (data["Position.z"]) {
-        parsedData.carsPositions = inflate(data["Position.z"]) as Position
+        parsedData.carsPositions = inflate(data["Position.z"]) as Position;
     }
     if (data["DriverList"] && !currentData.driversList){
-        parsedData.driversList = data["DriverList"] as DriversList
+        parsedData.driversList = data["DriverList"] as DriversList;
     }
     if (data["LapSeries"]){
         //this data arrives each time a driver crosses the start/finish line, it DOESN'T contain all the drivers at once
-        parsedData.lapSeries = {...data["LapSeries"]}
+        parsedData.lapSeries = {...data["LapSeries"]};
     }
     if (data["TrackStatus"]){
-        parsedData.trackStatus = data["TrackStatus"] as TrackStatus
+        parsedData.trackStatus = data["TrackStatus"] as TrackStatus;
     }
     if (data["TimingData"]){
         Object.keys(data["TimingData"].Lines).forEach(number => {
+            if(number == '16') console.log(data["TimingData"].Lines[number]);
+            if(number == '44') console.log(data["TimingData"].Lines[number]);
+            
             if(!parsedData.timingDataF1[number]){
-                parsedData.timingDataF1[number] = data["TimingData"].Lines[number]
+                parsedData.timingDataF1[number] = data["TimingData"].Lines[number];
             }else {
-                merge(parsedData.timingDataF1[number], data["TimingData"].Lines[number]) 
+                merge(parsedData.timingDataF1[number], data["TimingData"].Lines[number]);
             }
         })
     }
     if (data["TimingDataF1"]){
         Object.keys(data["TimingDataF1"].Lines).forEach(number => {
             if(!parsedData.timingDataF1[number]){
-                parsedData.timingDataF1[number] = data["TimingDataF1"].Lines[number]
+                parsedData.timingDataF1[number] = data["TimingDataF1"].Lines[number];
             }else {
-                merge(parsedData.timingDataF1[number], data["TimingDataF1"].Lines[number]) 
+                merge(parsedData.timingDataF1[number], data["TimingDataF1"].Lines[number]);
             }
         })
     }
     if (data["TimingStats"]){
         Object.keys(data["TimingStats"].Lines).forEach(number => {
             if(!parsedData.timingStats[number]){
-                parsedData.timingStats[number] = data["TimingStats"].Lines[number]
+                parsedData.timingStats[number] = data["TimingStats"].Lines[number];
             }else {
-                merge(parsedData.timingStats[number], data["TimingStats"].Lines[number]) 
+                merge(parsedData.timingStats[number], data["TimingStats"].Lines[number]);
             }
         })
     }
     if (data["TimingAppData"]){
         //info about stins, starting grid position and current position.
         Object.keys(data["TimingAppData"].Lines).forEach(number => {
+
             let old = parsedData.stints[number];
             let n = data["TimingAppData"].Lines[number];
-
             parsedData.stints[number] = {
                 GridPos : n.GridPos || old.GridPos,
                 Line : n.Line || old.Line,
                 RacingNumber : n.RacingNumber || old.RacingNumber,
-                Stints : []
+                Stints : parsedData.stints[number]?.Stints || []
             }
 
             if(n.Stints){
-                console.log(parsedData.stints[number].Stints, n);
-                
-                merge(parsedData.stints[number].Stints, n.Stints)            
+
+                //merge(parsedData.stints[number].Stints, n.Stints) 
+                Object.keys(n.Stints).map(key => { 
+                    if(parsedData.stints[number].Stints[key]){
+                        let data = parsedData.stints[number].Stints[key];
+                        let newData = n.Stints[key];
+                        console.log(data, newData);
+                        
+                        if(newData.LapFlags) data.LapFlags = newData.LapFlags;
+                        if(newData.Compound) data.Compound = newData.Compound;
+                        if(newData.New) data.New = newData.New;
+                        if(newData.TyresNotChanged) data.TyresNotChanged = newData.TyresNotChanged;
+                        if(newData.TotalLaps) data.TotalLaps = newData.TotalLaps;
+                        if(newData.StartLaps) data.StartLaps = newData.StartLaps;
+                        if(newData.LapTime) data.LapTime = newData.LapTime;
+                        if(newData.LapNumber) data.LapNumber = newData.LapNumber;
+    
+                        parsedData.stints[number].Stints[key] = data;
+                    } else{
+                        parsedData.stints[number].Stints[key] = n.Stints[key];
+                    }
+                    
+                })
                 
             } 
         }) 
     }
     if (data["Heartbeat"]){
-        parsedData.hearthbeat = data["Heartbeat"].Utc
+        parsedData.hearthbeat = data["Heartbeat"].Utc;
     }
     if (data["LapCount"]) {
-        merge(parsedData.lapCount, data["LapCount"])
+        merge(parsedData.lapCount, data["LapCount"]);
     }
     if (data["SessionInfo"]) {
-        parsedData.sessionInfo = data["SessionInfo"] as SessionInfo
+        parsedData.sessionInfo = data["SessionInfo"] as SessionInfo;
     }
     if (data["TeamRadio"]) {
-        merge(parsedData.teamRadio, data["TeamRadio"].Captures)
+        merge(parsedData.teamRadio, data["TeamRadio"].Captures);
     }
 
     return parsedData
 }
 
-export const SocketContext = createContext<State | undefined>(undefined)
+export const SocketContext = createContext<State | undefined>(undefined);
