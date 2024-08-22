@@ -14,13 +14,9 @@ const TeamRadioContainer = () => {
             setTeamRadioList(state.teamRadio);
         }
         if (state?.sessionInfo?.Path) {
-            console.log(state.sessionInfo.Path);
-            
-            setPath(state.sessionInfo.Path);
-            console.log(state.sessionInfo.Path);
-            
+            setPath(state.sessionInfo.Path);            
         }
-    }, [state?.teamRadio]);
+    }, [state?.teamRadio, state?.sessionInfo]);
 
 
 
