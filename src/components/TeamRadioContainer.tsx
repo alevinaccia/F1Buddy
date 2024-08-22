@@ -10,6 +10,8 @@ const TeamRadioContainer = () => {
     const baseUrl = 'https://livetiming.formula1.com/static/';
 
     useEffect(() => {
+        console.log("peppe");
+        
         if (state?.teamRadio) {
             setTeamRadioList(state.teamRadio);
         }
@@ -23,9 +25,9 @@ const TeamRadioContainer = () => {
     return (
         <div className='border-4 p-2'>
             <h2 className="text-xl text-white mb-4">Team Radio</h2>
-            <div className='team-radio-list overflow-y-auto h-80 p-4'>
+            <div className='team-radio-list overflow-y-auto h-screen p-4'>
                 {teamRadioList.length > 0 && state?.driversList &&
-                    teamRadioList.slice(-20)
+                    teamRadioList
                         .sort((a, b) => new Date(a.Utc).getTime() - new Date(b.Utc).getTime())
                         .reverse()
                         .map((e: Capture, index) => {

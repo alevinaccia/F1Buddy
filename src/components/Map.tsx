@@ -31,10 +31,6 @@ const fetchMapData = async (circuitKey, year, setPoints, setBounds, setRotation,
     const centerY = (Math.max(...mapData.y) - Math.min(...mapData.y)) / 2;
     const fixedRotation = mapData.rotation + rotationFIX;
 
-    const pnt = mapData.x.map((x, index) => {
-        return { 'x': x, 'y': mapData.y[index] }
-    })
-
     const rotatedPoints = mapData.x.map((x, index) => rotate(x, mapData.y[index], fixedRotation, centerX, centerY));
 
     const pointsX = rotatedPoints.map((item) => item.x);

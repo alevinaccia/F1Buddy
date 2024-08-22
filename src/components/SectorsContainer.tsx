@@ -12,16 +12,12 @@ const SectorsContainer = ({ carNumber }) => {
     if (globalData?.timingDataF1) {
       setTimingData(globalData?.timingDataF1[carNumber])
     }
-  }, [globalData?.timingDataF1[carNumber]])
-
-  useEffect(() => {
-
-  }, [timingData])
+  }, [globalData])
 
   let icon;
 
   return (
-    <div className='flex flex-row w-60'>
+    <div className='flex flex-row w-72'>
       {timingData && timingData.Sectors && timingData.Sectors.length >= 3 &&
         <>
           <Sector data={timingData?.Sectors[0]} />

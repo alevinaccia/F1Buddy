@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { AssemblyAI } from 'assemblyai';
 
 const TeamRadio = ({ url, driverInfo }) => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
+    const [transcriptText, setTranscriptText] = useState('');
+    const [mounted, setMounted] = useState<boolean>(false); //find a better way to understand if it's first mount
 
     const togglePlayPause = () => {
         if (audioRef.current) {
@@ -35,7 +38,34 @@ const TeamRadio = ({ url, driverInfo }) => {
                 audioRef.current.removeEventListener('timeupdate', updateProgress);
             }
         };
+
     }, []);
+
+    useEffect(() => {
+        const client = new AssemblyAI({
+            apiKey: "68921fade37f40539409aad146ae9dd4"
+        })
+
+        const run = async () => {
+            console.log("attemping", url);
+
+            const transcript = await client.transcripts.transcribe( {audio_url: url })
+            console.log(transcript);
+
+            if (transcript.text)
+                setTranscriptText(transcript.text)
+        }
+
+        try {
+            if (!mounted) run()
+            setMounted(true)
+        } catch (error) {
+            console.log("err");
+            setMounted(true)
+
+        }
+
+    }, [])
 
     const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (audioRef.current) {
@@ -46,9 +76,9 @@ const TeamRadio = ({ url, driverInfo }) => {
     };
 
     return (
-        <div className='flex items-center mb-4'>
-            <div className="audio-player">
-                <div className='w-14 text-white p-2 text-center font-bold rounded-lg mr-2' style={{backgroundColor: `#${driverInfo.TeamColour}`}}>{driverInfo.Tla}</div>
+        <div className='flex items-center mb-4 w-full '>
+            <div className="audio-player ">
+                <div className='w-14 text-white p-2 text-center font-bold rounded-lg mr-2' style={{ backgroundColor: `#${driverInfo.TeamColour}` }}>{driverInfo.Tla}</div>
                 <button onClick={togglePlayPause} className="play-pause-button">
                     {isPlaying ? '❚❚' : '►'}
                 </button>
@@ -60,6 +90,7 @@ const TeamRadio = ({ url, driverInfo }) => {
                     style={{ '--progress-percentage': `${progress}%` } as React.CSSProperties}
                 />
                 <audio ref={audioRef} src={url} />
+                <div className='ml-3 w-1/2 text-white'>{transcriptText}</div>
             </div>
         </div>
     );

@@ -120,7 +120,12 @@ export type Sector = {
     Value : string,
     Status : number,
     OverallFastest : boolean,
-    PersonalFastest : boolean
+    PersonalFastest : boolean,
+    Segments : {
+        [ key: number] : {
+            Status : number 
+        }
+    }
 }
 
 export type TimingInfo = {
@@ -261,9 +266,6 @@ export const handleMessage = (rawData, currentData : State) : State => {
     }
     if (data["TimingData"]){
         Object.keys(data["TimingData"].Lines).forEach(number => {
-            if(number == '16') console.log(data["TimingData"].Lines[number]);
-            if(number == '44') console.log(data["TimingData"].Lines[number]);
-            
             if(!parsedData.timingDataF1[number]){
                 parsedData.timingDataF1[number] = data["TimingData"].Lines[number];
             }else {
@@ -304,28 +306,27 @@ export const handleMessage = (rawData, currentData : State) : State => {
 
             if(n.Stints){
 
-                //merge(parsedData.stints[number].Stints, n.Stints) 
-                Object.keys(n.Stints).map(key => { 
-                    if(parsedData.stints[number].Stints[key]){
-                        let data = parsedData.stints[number].Stints[key];
-                        let newData = n.Stints[key];
-                        console.log(data, newData);
+                merge(parsedData.stints[number].Stints, n.Stints) 
+                // Object.keys(n.Stints).map(key => { 
+                //     if(parsedData.stints[number].Stints[key]){
+                //         let data = parsedData.stints[number].Stints[key];
+                //         let newData = n.Stints[key];
                         
-                        if(newData.LapFlags) data.LapFlags = newData.LapFlags;
-                        if(newData.Compound) data.Compound = newData.Compound;
-                        if(newData.New) data.New = newData.New;
-                        if(newData.TyresNotChanged) data.TyresNotChanged = newData.TyresNotChanged;
-                        if(newData.TotalLaps) data.TotalLaps = newData.TotalLaps;
-                        if(newData.StartLaps) data.StartLaps = newData.StartLaps;
-                        if(newData.LapTime) data.LapTime = newData.LapTime;
-                        if(newData.LapNumber) data.LapNumber = newData.LapNumber;
+                //         if(newData.LapFlags) data.LapFlags = newData.LapFlags;
+                //         if(newData.Compound) data.Compound = newData.Compound;
+                //         if(newData.New) data.New = newData.New;
+                //         if(newData.TyresNotChanged) data.TyresNotChanged = newData.TyresNotChanged;
+                //         if(newData.TotalLaps) data.TotalLaps = newData.TotalLaps;
+                //         if(newData.StartLaps) data.StartLaps = newData.StartLaps;
+                //         if(newData.LapTime) data.LapTime = newData.LapTime;
+                //         if(newData.LapNumber) data.LapNumber = newData.LapNumber;
     
-                        parsedData.stints[number].Stints[key] = data;
-                    } else{
-                        parsedData.stints[number].Stints[key] = n.Stints[key];
-                    }
+                //         parsedData.stints[number].Stints[key] = data;
+                //     } else{
+                //         parsedData.stints[number].Stints[key] = n.Stints[key];
+                //     }
                     
-                })
+                // })
                 
             } 
         }) 

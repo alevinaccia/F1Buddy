@@ -15,10 +15,10 @@ const DriverRow = ({ carTelemetry, driverInfo, index }) => {
 
     return (
         <>
-            <div className="p-2 flex items-center space-x-2 border-b-2 max-h-20 ">
+            <div className="p-2 flex items-center space-x-2 border-b-2 max-h-20">
                 <div style={{ color: 'white', backgroundColor: `#${driverInfo.TeamColour}` }} className='w-28 h-10 mx-auto flex items-center pl-2 rounded-r-lg justify-between font-bold' >
                     <span className='text-white mr-3 w-30' style={{display:'inline-block'}}>{index + 1}</span>
-                    <span className='bg-white p-1 mr-3 rounded min-w-14 text-right' style={{ color: `#${driverInfo.TeamColour}`}} >{driverInfo.Tla}</span>
+                    <span className='bg-white p-1 mr-3 rounded-r-lg min-w-14 text-center' style={{ color: `#${driverInfo.TeamColour}`}} >{driverInfo.Tla}</span>
                 </div>
                 <Tyres carNumber={ driverInfo.RacingNumber } />
                 <Gaps carNumber={ driverInfo.RacingNumber } />
