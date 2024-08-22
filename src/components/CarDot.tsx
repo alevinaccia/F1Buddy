@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { rotate } from './Map';
-import { GlobalData, SocketContext } from '../socketContext';
+import { State, SocketContext } from '../socketContext';
 
 type position = {
     X : number,
@@ -11,21 +11,21 @@ const CarDot = ({rotation, centerX, centerY, driverInfo }) => {
 
     const [pos, setPos] = useState<position>({ X : 0, Y : 0})
     const [transform, setTransform] = useState<string>('')
-    const globalData : GlobalData | undefined = useContext(SocketContext)
+    const state : State | undefined = useContext(SocketContext)
 
     useEffect(() => {
-        if (globalData?.carsPositions) {
+        if (state?.carsPositions) {
 
-            let startTime = new Date(globalData.carsPositions.Position[0].Timestamp).getTime()
+            let startTime = new Date(state.carsPositions.Position[0].Timestamp).getTime()
             let previousTimestamp: number | null = startTime;
 
-            for (let i = 0; i < globalData.carsPositions.Position.length; i++) {
+            for (let i = 0; i < state.carsPositions.Position.length; i++) {
 
-                let currentTime = new Date(globalData.carsPositions.Position[i].Timestamp).getTime()
+                let currentTime = new Date(state.carsPositions.Position[i].Timestamp).getTime()
 
                 if (previousTimestamp !== null) {
                     const delay = currentTime - startTime; // Calculate delay based on the new start time
-                    let p = globalData.carsPositions.Position[i].Entries[driverInfo.RacingNumber]
+                    let p = state.carsPositions.Position[i].Entries[driverInfo.RacingNumber]
                     setTimeout(() => {
                         setPos({
                             X : p.X,
@@ -33,14 +33,14 @@ const CarDot = ({rotation, centerX, centerY, driverInfo }) => {
                         }) // Directly pass the data object
                     }, delay);
                 } else {
-                    setPos(globalData.carsPositions?.[i].Entries[driverInfo.RacingNumber])
+                    setPos(state.carsPositions?.[i].Entries[driverInfo.RacingNumber])
                 }
 
                 previousTimestamp = currentTime; // Update previousTimestamp
 
             }
         }
-    }, [globalData?.carsPositions])
+    }, [state?.carsPositions])
 
 
     useEffect(() => {
@@ -53,9 +53,11 @@ const CarDot = ({rotation, centerX, centerY, driverInfo }) => {
     }, [pos.X, pos.Y, rotation, centerX, centerY]);
     
     return (
-        <circle r={120} fill={`#${driverInfo ? driverInfo.TeamColour : 'fefefe'}`}
-            style={{ transition: "all 1s linear", transform }}
-        ></circle>
+        <g>
+            <circle r={160} fill={`#${driverInfo ? driverInfo.TeamColour : 'fefefe'}`}
+                style={{ transition: "all 1s linear", transform }}
+            ></circle>
+        </g>
     )
 }
 

@@ -1,17 +1,19 @@
 import React, { ReactNode, StrictMode, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import { GlobalData, handleMessage, SocketContext } from './socketContext';
+import { State, handleMessage, SocketContext } from './socketContext';
 import LeaderBoard from './components/LeaderBoard';
 import Map from './components/Map';
 import entry from '../example.json'
 import {emulateSocket} from './socketEmulator'
 import Time from './components/Time';
+import Header from './components/Header';
+import TeamRadioContainer from './components/TeamRadioContainer';
 
 const SocketProvider = ({ children }: { children: ReactNode }): JSX.Element => {
 
   const [fakeOnSocket, setFakeOnSocket] = useState('')
-  const [globalData, setGlobalData] = useState<GlobalData>({
+  const [state, setState] = useState<State>({
       carsData: null,
       carsPositions: null,
       driversList : null,
@@ -25,7 +27,9 @@ const SocketProvider = ({ children }: { children: ReactNode }): JSX.Element => {
       lapCount : {  
         CurrentLap : 0,
         TotalLaps : 0
-      }
+      },
+      sessionInfo : null,
+      teamRadio : []
   })
 
   useEffect(() => {
@@ -33,15 +37,16 @@ const SocketProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   }, [])
 
   useEffect(() => {
-    const updatedData = handleMessage(fakeOnSocket, globalData);
-    setGlobalData({...updatedData});
-   
+    const updatedData = handleMessage(fakeOnSocket, state);
+    setState({...updatedData});
+    // const updatedData = handleMessage(entry, state);
+    // setState({...updatedData});
   }, [fakeOnSocket] )
 
 
 
   return (
-    <SocketContext.Provider value={globalData}>
+    <SocketContext.Provider value={state}>
       {children}
     </SocketContext.Provider>
   );
@@ -64,9 +69,15 @@ if (!window.__root) {
 window.__root.render(
   <React.StrictMode>
     <SocketProvider>
-      <Time/>
-      <LeaderBoard/>
-      <Map />
+      <Time />
+      <Header/>
+      <div className='flex flex-row'>
+        <LeaderBoard/>
+        <div className='flex flex-col w-full h-full'>
+          <Map/>
+          <TeamRadioContainer />
+        </div>
+      </div>
     </SocketProvider>
   </React.StrictMode>
 );

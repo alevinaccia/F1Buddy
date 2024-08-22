@@ -3,6 +3,42 @@ import { inflateRaw } from 'pako';
 
 import { merge } from 'lodash'
 
+export type Country = {
+  Key: number;
+  Code: string;
+  Name: string;
+};
+
+export type Circuit = {
+  Key: number;
+  ShortName: string;
+};
+
+export type Meeting = {
+  Key: number;
+  Name: string;
+  OfficialName: string;
+  Location: string;
+  Country: Country;
+  Circuit: Circuit;
+};
+
+export type ArchiveStatus = {
+  Status: string;
+};
+
+export type SessionInfo = {
+  Meeting: Meeting;
+  ArchiveStatus: ArchiveStatus;
+  Key: number;
+  Type: string;
+  Name: string;
+  StartDate: string;
+  EndDate: string;
+  GmtOffset: string;
+  Path: string;
+};
+
 export type CarDataChannels = {
     "0": number; //RPM
     "2": number; //speed
@@ -11,6 +47,12 @@ export type CarDataChannels = {
     "5": number; //brake    
     "45": number; //drs
 };
+
+export type Capture = {
+    Utc: string;
+    RacingNumber: string;
+    Path: string;
+  };
 
 export type Position = {
 	Position: PositionItem[];
@@ -160,7 +202,7 @@ export type DriversList = {
     [key : string] : DriverInfo
 }
 
-export type GlobalData = {
+export type State = {
     carsData: CarsTelemetry | null;
     carsPositions: Position | null;
     driversList : DriversList | null;
@@ -171,7 +213,9 @@ export type GlobalData = {
     timingStats : TimingStats;
     stints: DriversStints;
     lapCount : LapCount;
-    hearthbeat : string | null
+    sessionInfo : SessionInfo | null;
+    hearthbeat : string | null;
+    teamRadio : Capture[] | null
 }
 
 
@@ -185,7 +229,7 @@ const inflate = <T>(data: string): T => {
 };
 
 
-export const handleMessage = (rawData, currentData : GlobalData) : GlobalData => {
+export const handleMessage = (rawData, currentData : State) : State => {
     let data = {};
 
     if(rawData.R){
@@ -197,7 +241,7 @@ export const handleMessage = (rawData, currentData : GlobalData) : GlobalData =>
         });
     }
 
-    let parsedData : GlobalData = currentData
+    let parsedData : State = currentData
 
     if (data["CarData.z"]) {
         parsedData.carsData = inflate(data["CarData.z"]) as CarsTelemetry
@@ -256,18 +300,27 @@ export const handleMessage = (rawData, currentData : GlobalData) : GlobalData =>
             }
 
             if(n.Stints){
-                parsedData.stints[number].Stints = {...n.Stints}
-            }
+                console.log(parsedData.stints[number].Stints, n);
+                
+                merge(parsedData.stints[number].Stints, n.Stints)            
+                
+            } 
         }) 
     }
     if (data["Heartbeat"]){
         parsedData.hearthbeat = data["Heartbeat"].Utc
     }
     if (data["LapCount"]) {
-        parsedData.lapCount = data["LapCount"] as LapCount
+        merge(parsedData.lapCount, data["LapCount"])
+    }
+    if (data["SessionInfo"]) {
+        parsedData.sessionInfo = data["SessionInfo"] as SessionInfo
+    }
+    if (data["TeamRadio"]) {
+        merge(parsedData.teamRadio, data["TeamRadio"].Captures)
     }
 
     return parsedData
 }
 
-export const SocketContext = createContext<GlobalData | undefined>(undefined)
+export const SocketContext = createContext<State | undefined>(undefined)

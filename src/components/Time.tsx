@@ -1,17 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { GlobalData, SocketContext } from '../socketContext'
+import { State, SocketContext } from '../socketContext'
 
 const Time = (  ) => {
 
-    const globalData : GlobalData | undefined = useContext(SocketContext)
+    const state : State | undefined = useContext(SocketContext)
     const [ time, setTime ] = useState('')
 
     useEffect(() => {
-      if(globalData?.hearthbeat){
-        setTime(new Date(globalData.hearthbeat).toLocaleString())
+      if(state?.hearthbeat){
+        setTime(new Date(state.hearthbeat).toLocaleString())
       }
-    }, [globalData?.hearthbeat])
-
+    }, [state?.hearthbeat])
 
   return (
     <div className='text-xl'>Current time is {time}</div>

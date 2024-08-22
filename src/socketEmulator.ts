@@ -23,9 +23,9 @@ export const emulateSocket = async (filePath: string, updateEntries) => {
 
     for (let i = 0; i < entries.length; i++) {
 
-        if (i >= 30 && i <= 10000) {
-            startTime = entries[10000].timestamp; // Update start time to the timestamp at index 9000
-            i = 10000; // Jump to the last index of the range
+        if (i >= 30 && i <= 8700) {
+            startTime = entries[8700].timestamp; // Update start time to the timestamp at index 9000
+            i = 8700; // Jump to the last index of the range
             continue; // Skip the current iteration
         }
 

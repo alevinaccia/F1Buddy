@@ -1,20 +1,20 @@
 import React, { useContext } from 'react'
-import { GlobalData, SocketContext } from '../socketContext'
+import { State, SocketContext } from '../socketContext'
 
 const LapTimes = ({ carNumber }) => {
 
-  const globalData : GlobalData | undefined = useContext(SocketContext)
+  const state : State | undefined = useContext(SocketContext)
 
-  let lastLap = globalData?.timingDataF1[carNumber].LastLapTime.Value || '---'
-  let bestLap = globalData?.timingStats[carNumber].PersonalBestLapTime
+  let lastLap = state?.timingDataF1[carNumber].LastLapTime
+  let bestLap = state?.timingStats[carNumber].PersonalBestLapTime
   
   let bestLapColor = ''
   if(bestLap && bestLap.Position == 1) bestLapColor = '#A855F7'
 
   return (
-    <div className='flex-col w-36'>
-        <div>Last { lastLap }</div>
-        <div>Best <span style={{ color : bestLapColor}}>{ bestLap && bestLap.Value }</span></div>
+    <div className='flex-col w-36 pl-4'>
+        <div className={ lastLap?.PersonalFastest  ? 'text-green-500 text-lg' : 'text-lg'}>{ lastLap?.Value }</div>
+        <div className='text-sm' style={{ color : bestLapColor}}>{ bestLap && bestLap.Value }</div>
     </div>
   )
 }

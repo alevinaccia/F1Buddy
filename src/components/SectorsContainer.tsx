@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Sector from './Sector'
-import { GlobalData, SocketContext, TimingDataF1, TimingInfo } from '../socketContext'
+import { State, SocketContext, TimingDataF1, TimingInfo } from '../socketContext'
 
 const SectorsContainer = ({ carNumber }) => {
 
-  let globalData: GlobalData | undefined = useContext(SocketContext)
+  let globalData: State | undefined = useContext(SocketContext)
   let [timingData, setTimingData] = useState<TimingInfo>()
 
 

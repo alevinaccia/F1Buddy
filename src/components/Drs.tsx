@@ -8,7 +8,7 @@ const Drs = ( {status} ) => {
     case 0:
     case 1:
       //drs is off
-      style = "text-black border-black"
+      style = "text-black border-black opacity-40"
       break;
     case 8:
       //can be used in the next drs zone
@@ -24,7 +24,7 @@ const Drs = ( {status} ) => {
   }
 
   return (
-    <div className={`border-4 rounded-lg p-1 border-double ${style} `} style={{ transition: "all 0.2s linear" }} >DRS</div>
+    <div className={`border-4 rounded-lg p-1 border-solid ${style} `} style={{ transition: "all 0.2s linear" }} >DRS</div>
   )
 }
 
