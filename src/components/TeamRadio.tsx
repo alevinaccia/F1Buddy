@@ -42,8 +42,10 @@ const TeamRadio = ({ url, driverInfo }) => {
     }, []);
 
     useEffect(() => {
+        if(!import.meta.env.VITE_ASSEMBLY_API_KEY) return
+
         const client = new AssemblyAI({
-            apiKey: "68921fade37f40539409aad146ae9dd4"
+            apiKey: import.meta.env.VITE_ASSEMBLY_API_KEY
         })
 
         const run = async () => {

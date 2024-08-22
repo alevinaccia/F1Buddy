@@ -10,8 +10,6 @@ const TeamRadioContainer = () => {
     const baseUrl = 'https://livetiming.formula1.com/static/';
 
     useEffect(() => {
-        console.log("peppe");
-        
         if (state?.teamRadio) {
             setTeamRadioList(state.teamRadio);
         }

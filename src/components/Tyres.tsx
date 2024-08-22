@@ -5,21 +5,21 @@ import soft from "/tires/soft.svg";
 import intermediate from "/tires/intermediate.svg";
 import wet from "/tires/wet.svg";
 import unknown from "/tires/unknown.svg";
-import { DriverStints, GlobalData, SocketContext } from '../socketContext';
+import { DriverStints, State, SocketContext } from '../socketContext';
 
 const Tyres = ({ carNumber }) => {
 
-    let globalData : GlobalData | undefined = useContext(SocketContext)
+    let state : State | undefined = useContext(SocketContext)
 
     let [ stints, setStints] = useState<DriverStints>()
     let [ currentCompund, setCurrentCompound ] = useState<string>("unknown")
     let numberOfStints = 0
 
     useEffect(() => {    
-        if(globalData?.stints){
-            setStints(globalData?.stints[carNumber])
+        if(state?.stints){
+            setStints(state?.stints[carNumber])
         }
-    }, [globalData?.stints[carNumber]])
+    }, [state?.stints[carNumber]])
 
     useEffect(() => {
         if(stints && stints?.Stints[0]){
