@@ -1,9 +1,11 @@
 import React, { useContext } from 'react'
 import { State, SocketContext } from '../socketContext'
+import { DriverContext } from '../driverContext'
 
-const LapTimes = ({ carNumber }) => {
+const LapTimes = () => {
 
   const state : State | undefined = useContext(SocketContext)
+  let carNumber : number = useContext(DriverContext)
 
   let lastLap = state?.timingDataF1[carNumber].LastLapTime
   let bestLap = state?.timingStats[carNumber].PersonalBestLapTime

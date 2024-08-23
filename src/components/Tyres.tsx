@@ -6,23 +6,25 @@ import intermediate from "/tires/intermediate.svg";
 import wet from "/tires/wet.svg";
 import unknown from "/tires/unknown.svg";
 import { DriverStints, State, SocketContext } from '../socketContext';
+import { DriverContext } from '../driverContext';
 
-const Tyres = ({ carNumber }) => {
+const Tyres = () => {
 
     let state : State | undefined = useContext(SocketContext)
+    let carNumber : number = useContext(DriverContext)
 
     let [ stints, setStints] = useState<DriverStints>()
     let [ currentCompund, setCurrentCompound ] = useState<string>("unknown")
     let numberOfStints = 0
 
     useEffect(() => {    
-        if(state?.stints){
+        if(state?.stints?.[carNumber]){
             setStints(state?.stints[carNumber])
         }
     }, [state?.stints[carNumber]])
 
     useEffect(() => {
-        if(stints && stints?.Stints[0]){
+        if(stints?.Stints?.[0]){
             let stintsEntries = Object.keys(stints!.Stints)
             let currentStint = stintsEntries[stintsEntries.length - 1]
             setCurrentCompound(stints?.Stints[currentStint].Compound || 'unknown')

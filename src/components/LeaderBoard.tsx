@@ -10,14 +10,9 @@ const LeaderBoard = () => {
 
   return (
     <div className='border-4 ' >
-      <h2 className="text-xl text-white mb-4 p-2">Leaderboard</h2>
-        {state?.carsData && Object.keys(state.carsData.Entries[0].Cars).sort((a, b) => {
-          if (state.stints) {
-            if (state.stints[a].Line < state.stints[b].Line) {
-              return -1
-            }
-          }
-          return 1
+      <h2 className="text-xl text-white mb-4 p-2">Leaderboard : {state?.sessionInfo?.Name}</h2>
+        {state?.carsData && state.stints && Object.keys(state.carsData.Entries[0].Cars).sort((a, b) => {  
+            return state.stints[a].Line - state.stints[b].Line
         }).map((carNumber, index) => {
           return <DriverRow
             carTelemetry={state.carsData?.Entries[0].Cars[carNumber].Channels}

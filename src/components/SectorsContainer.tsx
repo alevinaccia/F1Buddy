@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Sector from './Sector'
 import { State, SocketContext, TimingDataF1, TimingInfo } from '../socketContext'
+import { DriverContext } from '../driverContext'
 
-const SectorsContainer = ({ carNumber }) => {
+const SectorsContainer = () => {
 
   let globalData: State | undefined = useContext(SocketContext)
   let [timingData, setTimingData] = useState<TimingInfo>()
+  let carNumber : number = useContext(DriverContext)
 
 
   useEffect(() => {

@@ -49,22 +49,17 @@ const TeamRadio = ({ url, driverInfo }) => {
         })
 
         const run = async () => {
-            console.log("attemping", url);
-
-            const transcript = await client.transcripts.transcribe( {audio_url: url })
-            console.log(transcript);
-
+            const transcript = await client.transcripts.transcribe( {audio_url: url });
             if (transcript.text)
-                setTranscriptText(transcript.text)
+                setTranscriptText(transcript.text);
         }
 
         try {
-            if (!mounted) run()
-            setMounted(true)
+            if (!mounted) //run(); avoiding useless calls during testing
+            setMounted(true);
         } catch (error) {
             console.log("err");
-            setMounted(true)
-
+            setMounted(true);
         }
 
     }, [])

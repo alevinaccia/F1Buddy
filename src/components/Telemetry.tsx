@@ -1,11 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import HorizontalBar from './HorizontalBar'
 import { CarDataChannels, State, SocketContext } from '../socketContext'
+import { DriverContext } from '../driverContext'
 
-const Telemetry = ({ carNumber }) => {
+const Telemetry = () => {
 
     const state: State | undefined = useContext(SocketContext)
+    let carNumber : number = useContext(DriverContext)
     const [carTelemetry, setCarTelemetry] = useState<CarDataChannels>()
+
 
     useEffect(() => {
         if (state?.carsData?.Entries[0]) {

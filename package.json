@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "assemblyai": "^4.6.1",
+    "axios": "^1.7.4",
     "lodash": "^4.17.21",
     "pako": "^2.1.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "signalr": "^2.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

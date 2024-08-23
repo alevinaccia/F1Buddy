@@ -9,10 +9,11 @@ import {emulateSocket} from './socketEmulator'
 import Time from './components/Time';
 import Header from './components/Header';
 import TeamRadioContainer from './components/TeamRadioContainer';
+import { connectToSocket } from './SocketHandler';
 
 const SocketProvider = ({ children }: { children: ReactNode }): JSX.Element => {
 
-  const [fakeOnSocket, setFakeOnSocket] = useState('')
+  const [onSocket, setOnSocket] = useState('')
   const [state, setState] = useState<State>({
       carsData: null,
       carsPositions: null,
@@ -29,19 +30,20 @@ const SocketProvider = ({ children }: { children: ReactNode }): JSX.Element => {
         TotalLaps : 0
       },
       sessionInfo : null,
-      teamRadio : []
+      teamRadio : [],
+      sessionData : [],
+      topThree : []
   })
 
   useEffect(() => {
-    emulateSocket("../recorded_data.txt", setFakeOnSocket)
+    connectToSocket(setOnSocket)
+    // emulateSocket("../recorded_data.txt", setOnSocket)
   }, [])
 
   useEffect(() => {
-    const updatedData = handleMessage(fakeOnSocket, state);
+    const updatedData = handleMessage(onSocket, state);
     setState({...updatedData});
-    // const updatedData = handleMessage(entry, state);
-    // setState({...updatedData});
-  }, [fakeOnSocket] )
+  }, [onSocket] )
 
 
 

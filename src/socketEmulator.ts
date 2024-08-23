@@ -28,7 +28,7 @@ export const emulateSocket = async (filePath: string, updateEntries) => {
             i = 10000; // Jump to the last index of the range
             continue; // Skip the current iteration
         }
-
+        
         if (previousTimestamp !== null) {
             const delay = entries[i].timestamp - startTime; // Calculate delay based on the new start time
 
