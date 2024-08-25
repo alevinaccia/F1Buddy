@@ -14,14 +14,28 @@ const TeamRadioContainer = () => {
             setTeamRadioList(state.teamRadio);
         }
         if (state?.sessionInfo?.Path) {
-            setPath(state.sessionInfo.Path);            
+            setPath(state.sessionInfo.Path);
         }
     }, [state?.teamRadio, state?.sessionInfo]);
+
+    let statusStyle = ''
+
+    if (state?.trackStatus?.Message) {
+        if (state.trackStatus.Message == "Red") {
+            statusStyle = 'border-red-600'
+        }
+        if (state.trackStatus.Message == "AllClear") {
+            statusStyle = 'border-green-600'
+        }
+        if (state.trackStatus.Message == "Yellow") {
+            statusStyle = 'border-yellow-300'
+        }
+    }
 
 
 
     return (
-        <div className='border-4 p-2'>
+        <div className={`border-4 p-2 ${statusStyle}`}>
             <h2 className="text-xl text-white mb-4">Team Radio</h2>
             <div className='team-radio-list overflow-y-auto h-screen p-4'>
                 {teamRadioList.length > 0 && state?.driversList &&

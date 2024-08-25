@@ -13,6 +13,7 @@ const Gaps = () => {
   let lapTimeDiffToLeader = ''
 
   const parseTime = (time: String) => {
+
     const [min, seconds] = time.split(':');
     const [sec, millis] = seconds.split('.');
     return parseInt(min) * 60 * 1000 + parseInt(sec) * 1000 + parseInt(millis)
@@ -30,7 +31,8 @@ const Gaps = () => {
 
   if (state?.sessionInfo?.Type != "Race") {
     const leadTime = state?.topThree[0].LapTime
-    if(leadTime)
+
+    if(leadTime && state?.timingStats[carNumber].PersonalBestLapTime.Value)
       lapTimeDiffToLeader = calculateTimeDiff(leadTime, state?.timingStats[carNumber].PersonalBestLapTime.Value);
     
   }

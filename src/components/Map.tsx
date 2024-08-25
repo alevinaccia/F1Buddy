@@ -54,50 +54,66 @@ const Map = ({ }) => {
     const [points, setPoints] = useState<null | { x: number; y: number }[]>(null)
     const [[minX, minY, widthX, widthY], setBounds] = useState<(null | number)[]>([null, null, null, null]);
     const state: State | undefined = useContext(SocketContext)
-    
+
     const [rotation, setRotation] = useState<number>(0);
     const [[centerX, centerY], setCenter] = useState<(null | number)[]>([null, null]);
 
     useEffect(() => {
-        if(state?.sessionInfo?.Meeting.Circuit.Key && new Date(state?.sessionInfo?.StartDate).getFullYear()){
+        if (state?.sessionInfo?.Meeting.Circuit.Key && new Date(state?.sessionInfo?.StartDate).getFullYear()) {
             const circuitKey = state?.sessionInfo?.Meeting.Circuit.Key
             const year = new Date(state?.sessionInfo?.StartDate).getFullYear();
             fetchMapData(circuitKey, year, setPoints, setBounds, setRotation, setCenter)
         }
-    }, [ state?.sessionInfo ])
+    }, [state?.sessionInfo])
 
     if (!points) {
         return <div>map loading</div>
     }
 
-    return (
-        <div className='border-4 p-2'>
-        <h2 className="text-xl text-white mb-4">Live GPS</h2>
-        <div className='w-full h-full'>{points[0] &&
-            <svg
-                viewBox={`${minX} ${minY} ${widthX} ${widthY}`}
-                className="h-full w-full xl:max-h-screen"
-                xmlns="http://www.w3.org/2000/svg">
-                <path
-                    className="stroke-black"
-                    strokeWidth={300}
-                    strokeLinejoin="round"
-                    fill="transparent"
-                    d={`M${points[0].x},${points[0].y} ${points.slice(1).map((point) => `L${point.x},${point.y}`).join(" ")}`}
-                />
-                {state?.carsPositions && Object.keys(state.carsPositions.Position[0].Entries).map((carNumber) => {
-                    let driverInfo : DriverInfo | undefined = state.driversList?.[Number(carNumber)] 
-                    return (<CarDot
-                                    rotation={rotation}
-                                    centerX={centerX}
-                                    centerY={centerY}
-                                    key={carNumber}
-                                    driverInfo={driverInfo}
-                                    />)
-                })}
+    let statusStyle = ''
 
-            </svg>}
-        </div>
+    if (state?.trackStatus?.Message) {
+        if (state.trackStatus.Message == "Red") {
+            statusStyle = 'border-red-600'
+        }
+        if (state.trackStatus.Message == "AllClear") {
+            statusStyle = 'border-green-600'
+        }
+        if (state.trackStatus.Message == "Yellow") {
+            statusStyle = 'border-yellow-300'
+        }
+    }
+
+
+    return (
+        <div className={`border-4 p-2 ${statusStyle}`}>
+            <h2 className="text-xl text-white mb-4">Live GPS</h2>
+            <div className='w-full h-full'>{points[0] &&
+                <svg
+                    viewBox={`${minX} ${minY} ${widthX} ${widthY}`}
+                    className="h-full w-full xl:max-h-screen"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        className="stroke-black"
+                        strokeWidth={300}
+                        strokeLinejoin="round"
+                        fill="transparent"
+                        d={`M${points[0].x},${points[0].y} ${points.slice(1).map((point) => `L${point.x},${point.y}`).join(" ")}`}
+                    />
+                    {state?.carsPositions && Object.keys(state.carsPositions.Position[0].Entries).map((carNumber) => {
+                        let driverInfo: DriverInfo | undefined = state.driversList?.[Number(carNumber)]
+                        return (<CarDot
+                            rotation={rotation}
+                            centerX={centerX}
+                            centerY={centerY}
+                            key={carNumber}
+                            driverInfo={driverInfo}
+                            inPit={state.timingDataF1[carNumber].InPit}
+                        />)
+                    })}
+
+                </svg>}
+            </div>
         </div>)
 
 

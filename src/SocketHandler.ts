@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 async function negotiate() {
     const hub = encodeURIComponent(JSON.stringify([{ name: "Streaming" }]));
     const url = `/api/signalr/negotiate?connectionData=${hub}&clientProtocol=1.5`;

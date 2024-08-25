@@ -3,15 +3,15 @@ import { rotate } from './Map';
 import { State, SocketContext } from '../socketContext';
 
 type position = {
-    X : number,
-    Y : number
+    X: number,
+    Y: number
 }
 
-const CarDot = ({rotation, centerX, centerY, driverInfo }) => {
+const CarDot = ({ rotation, centerX, centerY, driverInfo, inPit }) => {
 
-    const [pos, setPos] = useState<position>({ X : 0, Y : 0})
+    const [pos, setPos] = useState<position>({ X: 0, Y: 0 })
     const [transform, setTransform] = useState<string>('')
-    const state : State | undefined = useContext(SocketContext)
+    const state: State | undefined = useContext(SocketContext)
 
     useEffect(() => {
         if (state?.carsPositions) {
@@ -28,8 +28,8 @@ const CarDot = ({rotation, centerX, centerY, driverInfo }) => {
                     let p = state.carsPositions.Position[i].Entries[driverInfo.RacingNumber]
                     setTimeout(() => {
                         setPos({
-                            X : p.X,
-                            Y : p.Y
+                            X: p.X,
+                            Y: p.Y
                         }) // Directly pass the data object
                     }, delay);
                 } else {
@@ -51,12 +51,19 @@ const CarDot = ({rotation, centerX, centerY, driverInfo }) => {
         ].join(" ");
         setTransform(newTransform);
     }, [pos.X, pos.Y, rotation, centerX, centerY]);
-    
+
     return (
-        <g>
-            <circle r={160} fill={`#${driverInfo ? driverInfo.TeamColour : 'fefefe'}`}
-                style={{ transition: "all 1s linear", transform }}
+        <g style={{ transition: "all 1s linear", transform }} className={inPit ? 'opacity-50' : ''}>
+            <circle r={inPit ? 80 : 160} fill={`#${driverInfo ? driverInfo.TeamColour : 'fefefe'}`}
             ></circle>
+            {inPit ? <></> :
+                <text
+                    fontWeight="bold"
+                    fontSize={100 * 3}
+                    fill={`#${driverInfo.TeamColour}`}
+                    style={{ transform: 'translate(200px,100px)' }}
+                >{driverInfo.Tla}</text>
+            }
         </g>
     )
 }
