@@ -24,13 +24,19 @@ const LeaderBoard = () => {
     }
   }
 
+  const gapToNumber = (gap : string) : number  => {
+    const [sec, millisec] = gap.substring(1).split('.')
+    const secMillis = parseInt(sec) * 1000
+    return (secMillis + parseInt(millisec))
+  }
 
   return (
     <div className={`border-4 ${statusStyle}`} >
       <h2 className="text-xl text-white mb-4 p-2">Leaderboard : {state?.sessionInfo?.Name}</h2>
       <ul ref={parent}>
-        {state?.carsData && state.stints && Object.keys(state.carsData.Entries[0].Cars).sort((a, b) => {
-          return state.stints[a].Line - state.stints[b].Line
+        {state?.carsData && state.timingDataF1 && Object.keys(state.timingDataF1).sort((a, b) => {
+          //AAAAASH
+          return gapToNumber(state.timingDataF1[b].GapToLeader) - gapToNumber(state.timingDataF1[a].GapToLeader)
         }).map((carNumber, index) => {
           return <DriverRow
             carTelemetry={state.carsData?.Entries[0].Cars[carNumber].Channels}

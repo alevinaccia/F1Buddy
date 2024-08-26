@@ -38,7 +38,7 @@ const Gaps = () => {
   }
 
   return (
-    <div className='flex-col w-20'>
+    <div className='flex-col w-20 text-white'>
       {state?.sessionInfo?.Type == "Race" ? (
         <>
           <div>{gapAhead?.Value.includes("LAP") ? null : gapAhead?.Value}</div>

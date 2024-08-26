@@ -55,7 +55,7 @@ const TeamRadio = ({ url, driverInfo }) => {
         }
 
         try {
-            if (!mounted) //run(); avoiding useless calls during testing
+            if (!mounted) // run(); 
             setMounted(true);
         } catch (error) {
             console.log("err");
