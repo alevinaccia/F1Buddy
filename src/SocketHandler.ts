@@ -26,12 +26,12 @@ async function connectwss(token: string, cookie: string[]) {
     });
 }
 
-export async function connectToSocket(setOnSocket) {
+export async function getSocket() : Promise<WebSocket> {
     try {
         const resp = await negotiate();
-        const sock = await connectwss(resp.data['ConnectionToken'], resp.headers['set-cookie'] || []);
+        const socket = await connectwss(resp.data['ConnectionToken'], resp.headers['set-cookie'] || []);
 
-        sock.send(JSON.stringify({
+        socket.send(JSON.stringify({
             "H": "Streaming",
             "M": "Subscribe",
             "A": [[
@@ -60,16 +60,11 @@ export async function connectToSocket(setOnSocket) {
             "I": 1
         }));
 
-        sock.onmessage = (event) => {
-            try {
-                const message = JSON.parse(event.data.toString());
-                setOnSocket(message)
-            } catch (e) {
-                console.error('Error processing message:', e);
-            }
-        };
+        return socket
 
-    } catch (e) {
-        console.error("err",e);
+        
+
+    } catch (error) {
+        throw error
     }
 }

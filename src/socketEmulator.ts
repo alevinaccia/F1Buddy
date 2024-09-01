@@ -15,7 +15,7 @@ export const emulateSocket = async (filePath: string, updateEntries) => {
         try {
             return JSON.parse(line)
         } catch (error) {
-            console.error(line);
+            console.error(error);
         }
     })
     let startTime = entries[0].timestamp

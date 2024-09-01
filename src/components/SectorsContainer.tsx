@@ -1,22 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Sector from './Sector'
-import { State, SocketContext, TimingDataF1, TimingInfo } from '../socketContext'
+import { SocketContext} from '../socketContext'
 import { DriverContext } from '../driverContext'
+import { State, TimingInfo } from '../../types/type'
 
 const SectorsContainer = () => {
 
-  let globalData: State | undefined = useContext(SocketContext)
+  let state : State | undefined = useContext(SocketContext)?.state
   let [timingData, setTimingData] = useState<TimingInfo>()
   let carNumber : number = useContext(DriverContext)
 
 
   useEffect(() => {
-    if (globalData?.timingDataF1) {
-      setTimingData(globalData?.timingDataF1[carNumber])
+    if (state?.timingDataF1) {
+      setTimingData(state?.timingDataF1[carNumber])
     }
-  }, [globalData])
-
-  let icon;
+  }, [state])
 
   return (
     <div className='flex flex-row w-72'>

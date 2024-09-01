@@ -1,21 +1,81 @@
-import React, { useContext } from 'react'
-import { SocketContext, State } from '../socketContext'
+import React, { useContext, useEffect, useState } from 'react'
+import { SocketContext } from '../socketContext'
+import { State } from '../../types/type'
+
 
 
 const Header = () => {
 
-    const state: State | undefined = useContext(SocketContext)
+    type TimeLeft = {
+        hours: number,
+        minutes: string,
+        seconds: string,
+    };
+
+
+    const state: State | undefined = useContext(SocketContext)?.state
+
+    let targetDate: Date
+
+    if (state?.sessionInfo?.StartDate) {
+        targetDate = new Date(state?.sessionInfo?.StartDate);
+        targetDate.setHours(targetDate.getHours() + 1)
+    }
+
+
+    const calculateTimeLeft = (): TimeLeft => {
+
+        let timeLeft: TimeLeft = {
+            hours: 0,
+            minutes: '0',
+            seconds: '0',
+        };
+
+        if (targetDate) {
+            const now: Date = new Date();
+            const difference = targetDate.getTime() - now.getTime();
+
+            if (difference > 0) {
+                timeLeft.hours = Math.floor((difference / (1000 * 60 * 60)) % 24)
+                timeLeft.minutes = Math.floor((difference / 1000 / 60) % 60).toString().padStart(2, '0')
+                timeLeft.seconds = Math.floor((difference / 1000) % 60).toString().padStart(2, '0')
+            } else {
+                timeLeft.hours = 0
+                timeLeft.minutes = '0'
+                timeLeft.seconds = '00'
+            }
+        }
+
+        return timeLeft;
+    }
+
+
+    const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft())
+    const [value, setValue] = useState('')
+    const setDelay = useContext(SocketContext)?.setDelay
+
+    const updateDelay = () => {
+        if (setDelay) setDelay(Number(value))
+    }
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setTimeLeft(calculateTimeLeft());
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [timeLeft]);
 
     let statusStyle = ''
 
-    if(state?.trackStatus?.Message){
-        if(state.trackStatus.Message == "Red"){
+    if (state?.trackStatus?.Message) {
+        if (state.trackStatus.Message == "Red") {
             statusStyle = 'bg-red-600 px-8 py-3 rounded-2xl shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 '
         }
-        if(state.trackStatus.Message == "AllClear"){
+        if (state.trackStatus.Message == "AllClear") {
             statusStyle = 'bg-green-600 px-8 py-3 rounded-2xl'
         }
-        if(state.trackStatus.Message == "Yellow"){
+        if (state.trackStatus.Message == "Yellow") {
             statusStyle = 'bg-yellow-300 px-8 py-3  rounded-2xl '
         }
     }
@@ -28,13 +88,20 @@ const Header = () => {
                     <div className='ml-2 font-bold text-white w-80'>{state.sessionInfo.Meeting.OfficialName}</div>
                 </div>
             </>}
+            
             <div className='flex items-center '>
-            {state?.trackStatus?.Message && <>
-                <div className={`mr-10 text-4xl ${statusStyle}`}>{state?.trackStatus?.Message}</div>
-            </>}
-            {state?.lapCount && <>
-                <div className='text-4xl text-white font-bold mr-20'>{state?.lapCount.CurrentLap}/{state?.lapCount.TotalLaps}</div>
-            </>}
+                <div>
+                    <input value={value} onChange={e => setValue(e.target.value)} onBlur={e => updateDelay()}
+                        type="number" id="number-input" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-24 mr-4 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Delay" required />
+                </div>
+                {state?.trackStatus?.Message && <>
+                    <div className={`mr-10 text-4xl ${statusStyle}`}>{state?.trackStatus?.Message}</div>
+                </>}
+                {state?.sessionInfo?.Type == "Race" ? (
+                    <>
+                        <div className='text-4xl text-white font-bold mr-20'>{state?.lapCount.CurrentLap}/{state?.lapCount.TotalLaps}</div>
+                    </>
+                ) : <div className='text-4xl text-white font-bold mr-20 w-20'>{timeLeft.minutes}:{timeLeft.seconds}</div>}
             </div>
         </div>
     </>

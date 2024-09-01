@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { rotate } from './Map';
-import { State, SocketContext } from '../socketContext';
+import { SocketContext } from '../socketContext';
+import { State } from '../../types/type';
 
 type position = {
     X: number,
@@ -11,7 +12,7 @@ const CarDot = ({ rotation, centerX, centerY, driverInfo, inPit }) => {
 
     const [pos, setPos] = useState<position>({ X: 0, Y: 0 })
     const [transform, setTransform] = useState<string>('')
-    const state: State | undefined = useContext(SocketContext)
+    const state: State | undefined = useContext(SocketContext)?.state
 
     useEffect(() => {
         if (state?.carsPositions) {
@@ -53,17 +54,17 @@ const CarDot = ({ rotation, centerX, centerY, driverInfo, inPit }) => {
     }, [pos.X, pos.Y, rotation, centerX, centerY]);
 
     return (
-        <g style={{ transition: "all 1s linear", transform }} className={inPit ? 'opacity-50' : ''}>
-            <circle r={inPit ? 80 : 160} fill={`#${driverInfo ? driverInfo.TeamColour : 'fefefe'}`}
+        <g style={{ transition: "all 1s linear", transform }}>
+            <circle r={160} fill={`#${driverInfo ? driverInfo.TeamColour : 'fefefe'}`}
             ></circle>
-            {inPit ? <></> :
-                <text
-                    fontWeight="bold"
-                    fontSize={100 * 3}
-                    fill={`#${driverInfo.TeamColour}`}
-                    style={{ transform: 'translate(200px,100px)' }}
-                >{driverInfo.Tla}</text>
-            }
+
+            <text
+                fontWeight="bold"
+                fontSize={100 * 3}
+                fill={`#${driverInfo.TeamColour}`}
+                style={{ transform: 'translate(200px,100px)' }}
+            >{driverInfo.Tla}</text>
+
         </g>
     )
 }

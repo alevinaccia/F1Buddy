@@ -5,13 +5,14 @@ import soft from "/tires/soft.svg";
 import intermediate from "/tires/intermediate.svg";
 import wet from "/tires/wet.svg";
 import unknown from "/tires/unknown.svg";
-import { DriverStints, State, SocketContext } from '../socketContext';
+import {  SocketContext } from '../socketContext';
 import { DriverContext } from '../driverContext';
+import { DriverStints, State } from '../../types/type';
 
 const Tyres = () => {
 
-    let state : State | undefined = useContext(SocketContext)
-    let carNumber : number = useContext(DriverContext)
+    let state : State | undefined = useContext(SocketContext)?.state;
+    let carNumber : number = useContext(DriverContext);
 
     let [ stints, setStints] = useState<DriverStints>()
     let [ currentCompund, setCurrentCompound ] = useState<string>("unknown")

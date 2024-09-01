@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { State, SocketContext } from '../socketContext'
+import { SocketContext } from '../socketContext'
+import { State } from '../../types/type'
 
 const Time = (  ) => {
 
-    const state : State | undefined = useContext(SocketContext)
-    const [ time, setTime ] = useState('')
+    const state : State | undefined = useContext(SocketContext)?.state;
+    const [ time, setTime ] = useState('');
 
     useEffect(() => {
       if(state?.hearthbeat){
-        setTime(new Date(state.hearthbeat).toLocaleString())
+        setTime(new Date(state.hearthbeat).toLocaleString());
       }
     }, [state?.hearthbeat])
 

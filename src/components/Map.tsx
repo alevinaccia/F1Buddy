@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { State, DriverInfo, SocketContext } from '../socketContext'
+import { SocketContext } from '../socketContext'
+import { State, DriverInfo } from '../../types/type'
+
 import CarDot from './CarDot';
 
 const rad = (deg) => deg * (Math.PI / 180);
@@ -51,9 +53,9 @@ const fetchMapData = async (circuitKey, year, setPoints, setBounds, setRotation,
 
 const Map = ({ }) => {
 
-    const [points, setPoints] = useState<null | { x: number; y: number }[]>(null)
+    const [points, setPoints] = useState<null | { x: number; y: number }[]>(null);
     const [[minX, minY, widthX, widthY], setBounds] = useState<(null | number)[]>([null, null, null, null]);
-    const state: State | undefined = useContext(SocketContext)
+    const state: State | undefined = useContext(SocketContext)?.state;
 
     const [rotation, setRotation] = useState<number>(0);
     const [[centerX, centerY], setCenter] = useState<(null | number)[]>([null, null]);
