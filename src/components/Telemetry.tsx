@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import HorizontalBar from './HorizontalBar'
-import { SocketContext } from '../socketContext'
+import { useSocket } from '../SocketContext.tsx'
 import { DriverContext } from '../driverContext'
 import { CarDataChannels, State } from '../../types/type'
 
 const Telemetry = () => {
 
-    const state: State | undefined = useContext(SocketContext)?.state;
-    let carNumber : number = useContext(DriverContext);
+    const state: State | undefined = useSocket();
+    let carNumber: number = useContext(DriverContext);
     const [carTelemetry, setCarTelemetry] = useState<CarDataChannels>()
 
 
@@ -24,10 +24,10 @@ const Telemetry = () => {
                 let currentTime = new Date(state?.carsData?.Entries[i].Utc).getTime()
 
                 if (previousTimestamp !== null) {
-                    const delay = currentTime - startTime; 
+                    const delay = currentTime - startTime;
 
                     setTimeout(() => {
-                        setCarTelemetry(entries[i].Cars[carNumber].Channels) 
+                        setCarTelemetry(entries[i].Cars[carNumber].Channels)
                     }, delay);
                 } else {
                     setCarTelemetry(entries[i].Cars[carNumber].Channels)
@@ -37,7 +37,7 @@ const Telemetry = () => {
 
             }
         }
-        
+
     }, [state?.carsData])
 
     return (

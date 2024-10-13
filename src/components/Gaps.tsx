@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
-import { SocketContext } from '../socketContext'
+import { useSocket } from '../SocketContext.tsx'
 import { State } from '../../types/type'
 import { DriverContext } from '../driverContext'
 
 const Gaps = () => {
 
-  const state : State | undefined = useContext(SocketContext)?.state
+  const state: State | undefined = useSocket();
   let carNumber: number = useContext(DriverContext)
 
   let gapAhead = state?.timingDataF1[carNumber].IntervalToPositionAhead
@@ -22,7 +22,7 @@ const Gaps = () => {
 
   const calculateTimeDiff = (time1: string, time2: string) => {
     const diffMs = parseTime(time1) - parseTime(time2);
-    const diffSec = diffMs/1000
+    const diffSec = diffMs / 1000
 
     const sign = diffSec <= 0 ? "+" : "-";
     const formattedDiff = Math.abs(diffSec).toFixed(3);
@@ -33,7 +33,7 @@ const Gaps = () => {
   if (state?.sessionInfo?.Type != "Race") {
     const leadTime = state?.topThree[0].LapTime
 
-    if(leadTime && state?.timingStats[carNumber].PersonalBestLapTime.Value)
+    if (leadTime && state?.timingStats[carNumber].PersonalBestLapTime.Value)
       lapTimeDiffToLeader = calculateTimeDiff(leadTime, state?.timingStats[carNumber].PersonalBestLapTime.Value);
   }
 
@@ -42,7 +42,7 @@ const Gaps = () => {
       {state?.sessionInfo?.Type == "Race" ? (
         <>
           <div>{gapAhead?.Value.includes("LAP") ? null : gapAhead?.Value}</div>
-          <div>{gapToLeader?.includes("LAP") || gapToLeader == ""  ? 'Leader' : gapToLeader}</div>
+          <div>{gapToLeader?.includes("LAP") || gapToLeader == "" ? 'Leader' : gapToLeader}</div>
         </>
       ) : <div>{lapTimeDiffToLeader == '+0.000' ? "Leader" : lapTimeDiffToLeader}</div>}
     </div>

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { rotate } from './Map';
-import { SocketContext } from '../socketContext';
+import { useSocket } from '../SocketContext.tsx'
 import { State } from '../../types/type';
 
 type position = {
@@ -12,7 +12,7 @@ const CarDot = ({ rotation, centerX, centerY, driverInfo, inPit }) => {
 
     const [pos, setPos] = useState<position>({ X: 0, Y: 0 })
     const [transform, setTransform] = useState<string>('')
-    const state: State | undefined = useContext(SocketContext)?.state
+    const state: State | undefined = useSocket();
 
     useEffect(() => {
         if (state?.carsPositions) {

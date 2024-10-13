@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { SocketContext } from '../socketContext'
+import { useSocket } from '../SocketContext.tsx'
 import TeamRadio from './TeamRadio';
 import { Capture, State } from '../../types/type';
 
 const TeamRadioContainer = () => {
 
-    const state: State | undefined = useContext(SocketContext)?.state;
+    const state: State | undefined = useSocket();
     const [teamRadioList, setTeamRadioList] = useState<Capture[]>([]);
     const [path, setPath] = useState('');
     const baseUrl = 'https://livetiming.formula1.com/static/';

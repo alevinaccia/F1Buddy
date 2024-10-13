@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { SocketContext } from '../socketContext'
+import { useSocket } from '../SocketContext.tsx'
 import { State } from '../../types/type'
 
 
@@ -13,9 +13,9 @@ const Header = () => {
     };
 
 
-    const state: State | undefined = useContext(SocketContext)?.state
+    const state: State | undefined = useSocket();
 
-    let targetDate: Date
+    let targetDate: Date;
 
     if (state?.sessionInfo?.StartDate) {
         targetDate = new Date(state?.sessionInfo?.StartDate);
@@ -52,11 +52,7 @@ const Header = () => {
 
     const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft())
     const [value, setValue] = useState('')
-    const setDelay = useContext(SocketContext)?.setDelay
 
-    const updateDelay = () => {
-        if (setDelay) setDelay(Number(value))
-    }
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -88,11 +84,10 @@ const Header = () => {
                     <div className='ml-2 font-bold text-white w-80'>{state.sessionInfo.Meeting.OfficialName}</div>
                 </div>
             </>}
-            
+
             <div className='flex items-center '>
                 <div>
-                    <input value={value} onChange={e => setValue(e.target.value)} onBlur={e => updateDelay()}
-                        type="number" id="number-input" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-24 mr-4 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Delay" required />
+                    <input value={value} onChange={e => setValue(e.target.value)} type="number" id="number-input" aria-describedby="helper-text-explanation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-24 mr-4 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Delay" required />
                 </div>
                 {state?.trackStatus?.Message && <>
                     <div className={`mr-10 text-4xl ${statusStyle}`}>{state?.trackStatus?.Message}</div>

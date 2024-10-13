@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { SocketContext } from '../socketContext'
+import { useSocket } from '../SocketContext.tsx'
 import { DriverContext } from '../driverContext'
 import { State } from '../../types/type'
 
 const LapTimes = () => {
 
-  const state: State | undefined = useContext(SocketContext)?.state;
+  const state: State | undefined = useSocket();
   let carNumber: number = useContext(DriverContext);
 
   let lastLap = state?.timingDataF1[carNumber].LastLapTime;

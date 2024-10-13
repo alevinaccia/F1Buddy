@@ -1,19 +1,19 @@
 import { stat } from 'fs';
 import React, { useContext } from 'react'
-import { SocketContext } from '../socketContext';
+import { useSocket } from '../SocketContext.tsx'
 import { State } from '../../types/type';
 import { DriverContext } from '../driverContext';
 
-const Drs = ( {status} ) => {
+const Drs = ({ status }) => {
 
-  const state: State | undefined = useContext(SocketContext)?.state
+  const state: State | undefined = useSocket();
   const carNumber: number | undefined = useContext(DriverContext)
 
-  let inPit  = state?.timingDataF1[carNumber].InPit
+  let inPit = state?.timingDataF1[carNumber].InPit
   let style;
 
-  if(!inPit){
-    switch(status){
+  if (!inPit) {
+    switch (status) {
       case 0:
       case 1:
       case 2:
@@ -31,7 +31,7 @@ const Drs = ( {status} ) => {
       case 14:
         //drs is active
         style = "bg-green-500 text-white border-white"
-  
+
         break;
     }
   } else {

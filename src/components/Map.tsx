@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { SocketContext } from '../socketContext'
+import { useSocket } from '../SocketContext.tsx'
 import { State, DriverInfo } from '../../types/type'
 
 import CarDot from './CarDot';
@@ -8,7 +8,7 @@ const rad = (deg) => deg * (Math.PI / 180);
 
 
 
-//put in an utils file
+//TODO put in an utils file
 export const rotate = (x, y, a, px, py) => {
     const c = Math.cos(rad(a));
     const s = Math.sin(rad(a));
@@ -55,7 +55,7 @@ const Map = ({ }) => {
 
     const [points, setPoints] = useState<null | { x: number; y: number }[]>(null);
     const [[minX, minY, widthX, widthY], setBounds] = useState<(null | number)[]>([null, null, null, null]);
-    const state: State | undefined = useContext(SocketContext)?.state;
+    const state: State | undefined = useSocket();
 
     const [rotation, setRotation] = useState<number>(0);
     const [[centerX, centerY], setCenter] = useState<(null | number)[]>([null, null]);

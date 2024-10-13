@@ -18,7 +18,7 @@ async function connectwss(token: string, cookie: string[]) {
 
         sock.onopen = () => {
             res(sock);
-        }; 
+        };
 
         sock.onerror = (err) => {
             rej(err);
@@ -26,7 +26,16 @@ async function connectwss(token: string, cookie: string[]) {
     });
 }
 
-export async function getSocket() : Promise<WebSocket> {
+export const initializeSocket = async () => {
+    try {
+        return await getSocket()
+
+    } catch (error) {
+        console.error("Error retrieving socket : ", error)
+    }
+}
+
+export async function getSocket(): Promise<WebSocket> {
     try {
         const resp = await negotiate();
         const socket = await connectwss(resp.data['ConnectionToken'], resp.headers['set-cookie'] || []);
@@ -61,8 +70,6 @@ export async function getSocket() : Promise<WebSocket> {
         }));
 
         return socket
-
-        
 
     } catch (error) {
         throw error
