@@ -31,8 +31,11 @@ const Header = () => {
             seconds: '0',
         };
 
-        if (targetDate) {
-            const now: Date = new Date();
+        if (targetDate && state.hearthbeat) {
+            //FIXME: temporary solution
+            //
+            //const now: Date = new Date();
+            const now = new Date(state.hearthbeat);
             const difference = targetDate.getTime() - now.getTime();
 
             if (difference > 0) {

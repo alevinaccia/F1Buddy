@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { AssemblyAI } from 'assemblyai';
-
+// TODO: Reactor 
 const TeamRadio = ({ url, driverInfo }) => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -42,23 +42,22 @@ const TeamRadio = ({ url, driverInfo }) => {
     }, []);
 
     useEffect(() => {
-        if(!import.meta.env.VITE_ASSEMBLY_API_KEY) return
+        if (!import.meta.env.VITE_ASSEMBLY_API_KEY) return
 
         const client = new AssemblyAI({
             apiKey: import.meta.env.VITE_ASSEMBLY_API_KEY
         })
 
         const run = async () => {
-            const transcript = await client.transcripts.transcribe( {audio_url: url });
+            const transcript = await client.transcripts.transcribe({ audio_url: url });
             if (transcript.text)
                 setTranscriptText(transcript.text);
         }
 
         try {
             if (!mounted) // run(); 
-            setMounted(true);
+                setMounted(true);
         } catch (error) {
-            console.log("err");
             setMounted(true);
         }
 

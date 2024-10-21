@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import HorizontalBar from './HorizontalBar'
 import { useSocket } from '../SocketContext.tsx'
-import { DriverContext } from '../driverContext'
+import { useDriver } from './DriverRow.tsx'
 import { CarDataChannels, State } from '../../types/type'
 
 const Telemetry = () => {
 
     const state: State | undefined = useSocket();
-    let carNumber: number = useContext(DriverContext);
+    let carNumber: number = useDriver();
     const [carTelemetry, setCarTelemetry] = useState<CarDataChannels>()
 
 

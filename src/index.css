@@ -3,32 +3,38 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: 'Formula1';
-    src: url('https://www.formula1.com/etc/designs/fom-website/fonts/F1Regular/Formula1-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'Formula1';
+  src: url('https://www.formula1.com/etc/designs/fom-website/fonts/F1Regular/Formula1-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
 }
 
 body {
-    background-color: #282c34;
+  background-color: #282c34;
 }
 
 /* AudioPlayer.css */
 .audio-player {
   display: flex;
   align-items: center;
-  background-color: #222; /* Dark background */
-  border-radius: 8px; /* Slightly rounded corners */
+  background-color: #222;
+  /* Dark background */
+  border-radius: 8px;
+  /* Slightly rounded corners */
   padding: 10px;
-  width: 100%; /* Compact width */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+  width: 100%;
+  /* Compact width */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  /* Subtle shadow for depth */
 }
 
 .play-pause-button {
   background: none;
   border: none;
-  color: #fff; /* White icons */
-  font-size: 24px; /* Larger icon size */
+  color: #fff;
+  /* White icons */
+  font-size: 24px;
+  /* Larger icon size */
   cursor: pointer;
   padding: 0;
   margin-right: 15px;
@@ -36,14 +42,16 @@ body {
 }
 
 .play-pause-button:hover {
-  transform: scale(1.2); /* Slight zoom on hover */
+  transform: scale(1.2);
+  /* Slight zoom on hover */
 }
 
 .progress-bar {
   flex-grow: 1;
   appearance: none;
   height: 4px;
-  background: #555; /* Medium gray background */
+  background: #555;
+  /* Medium gray background */
   border-radius: 2px;
   cursor: pointer;
   outline: none;
@@ -59,8 +67,10 @@ body {
   appearance: none;
   width: 12px;
   height: 12px;
-  background: #00bcd4; /* Neon cyan thumb */
-  border-radius: 50%; /* Round thumb */
+  background: #00bcd4;
+  /* Neon cyan thumb */
+  border-radius: 50%;
+  /* Round thumb */
   cursor: pointer;
   transition: transform 0.2s ease;
   position: relative;
@@ -70,7 +80,8 @@ body {
 .progress-bar::-moz-range-thumb {
   width: 12px;
   height: 12px;
-  background: #00bcd4; /* Neon cyan thumb */
+  background: #00bcd4;
+  /* Neon cyan thumb */
   border-radius: 50%;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -85,7 +96,8 @@ body {
   left: 0;
   height: 100%;
   width: var(--progress-percentage, 0%);
-  background: #00bcd4; /* Neon cyan filled track */
+  background: #00bcd4;
+  /* Neon cyan filled track */
   z-index: 1;
   border-radius: 2px;
   pointer-events: none;
@@ -93,7 +105,8 @@ body {
 
 .progress-bar::-webkit-slider-thumb:hover,
 .progress-bar::-moz-range-thumb:hover {
-  transform: scale(1.2); /* Slight zoom on hover */
+  transform: scale(1.2);
+  /* Slight zoom on hover */
 }
 
 /* custom scrollbar */
@@ -116,3 +129,10 @@ body {
   background-color: #00bcd4;
 }
 
+.range-slider .range-slider__thumb[data-lower] {
+  width: 0;
+}
+
+.range-slider .range-slider__range {
+  border-radius: 6px;
+}

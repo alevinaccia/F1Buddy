@@ -1,15 +1,15 @@
 import React, { ReactNode, useEffect, useState, useContext } from 'react';
 import './index.css';
-import { handleMessage } from './messageHandler';
 import { State } from '../types/type'
-import { initializeSocket } from './SocketHandler';
 import { createContext } from "react";
+import DevMenu from './components/DevMenu';
+import { SocketContextController } from './SocketContextController';
 
 const SocketContext = createContext<State | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: ReactNode }): JSX.Element => {
 
-  const [socket, setSocket] = useState<WebSocket>()
+  const [session, setSession] = useState<string>("ned_fp3.txt");
   const [state, setState] = useState<State>({
     carsData: null,
     carsPositions: null,
@@ -33,42 +33,51 @@ export const SocketProvider = ({ children }: { children: ReactNode }): JSX.Eleme
     raceControlMessages: []
   })
 
+  const controller = SocketContextController.getInstance();
+
   useEffect(() => {
     (async () => {
-      try {
-        setSocket(await initializeSocket())
-      } catch (error) {
-        console.error("Error setting up the socket");
+      const socket = await controller.initialize();
+      if (socket) {
+        socket.onmessage = (e) => {
+          try {
+            const message = JSON.parse(e.data.toString());
+            const updatedData = controller.handleMessage(message, state);
+            setState((prevState) => ({
+              ...prevState,
+              ...updatedData
+            }))
+          } catch (e) {
+            console.error("an error occurred while processing the message")
+          }
+        }
       }
     })()
-    // emulateSocket("../recorded_data.txt", setOnSocket)
   }, [])
 
   useEffect(() => {
-    if (socket) {
-      socket.onmessage = (event) => {
-        try {
-          const message = JSON.parse(event.data.toString());
-          const updatedData = handleMessage(message, state);
-          setState((prevState) => ({
-            ...prevState,
-            ...updatedData
-          }));
-        } catch (e) {
-          console.error('Error processing message:', e);
-        }
-      }
-    }
-    //emulateSocket("../spa_race.txt", setOnSocket)
-  }, [socket])
+    controller.loadFile(session);
+  }, [session])
+
+  const setCursor = (value) => {
+    controller.setCursor(value);
+  }
+
+  const togglePause = () => {
+    controller.togglePause();
+  }
 
   return (
     <SocketContext.Provider value={state} >
+      {(controller.isDevMode() &&
+        <DevMenu onFileChange={setSession} fileList={controller.getFileList()} setCursor={setCursor} togglePause={togglePause} />
+      )}
       {children}
     </SocketContext.Provider>
   );
 
 }
+
 export function useSocket() {
   const context = useContext(SocketContext);
   if (context === undefined) {

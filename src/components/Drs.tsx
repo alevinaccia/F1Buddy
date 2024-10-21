@@ -1,13 +1,12 @@
-import { stat } from 'fs';
 import React, { useContext } from 'react'
 import { useSocket } from '../SocketContext.tsx'
 import { State } from '../../types/type';
-import { DriverContext } from '../driverContext';
+import { useDriver } from './DriverRow.tsx'
 
 const Drs = ({ status }) => {
 
   const state: State | undefined = useSocket();
-  const carNumber: number | undefined = useContext(DriverContext)
+  const carNumber: number | undefined = useDriver();
 
   let inPit = state?.timingDataF1[carNumber].InPit
   let style;

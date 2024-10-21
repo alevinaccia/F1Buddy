@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Sector from './Sector'
 import { useSocket } from '../SocketContext.tsx'
-import { DriverContext } from '../driverContext'
+import { useDriver } from './DriverRow';
 import { State, TimingInfo } from '../../types/type'
 
 const SectorsContainer = () => {
 
   let state: State | undefined = useSocket();
   let [timingData, setTimingData] = useState<TimingInfo>();
-  let carNumber: number = useContext(DriverContext);
+  let carNumber: number = useDriver();
 
 
   useEffect(() => {

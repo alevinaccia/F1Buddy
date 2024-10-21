@@ -6,13 +6,13 @@ import intermediate from "/tires/intermediate.svg";
 import wet from "/tires/wet.svg";
 import unknown from "/tires/unknown.svg";
 import { useSocket } from '../SocketContext.tsx'
-import { DriverContext } from '../driverContext';
+import { useDriver } from './DriverRow';
 import { DriverStints, State } from '../../types/type';
 
 const Tyres = () => {
 
     let state: State | undefined = useSocket();
-    let carNumber: number = useContext(DriverContext);
+    let carNumber: number = useDriver();
 
     let [stints, setStints] = useState<DriverStints>()
     let [currentCompund, setCurrentCompound] = useState<string>("unknown")

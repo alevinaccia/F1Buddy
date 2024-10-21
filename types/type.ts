@@ -4,6 +4,13 @@ export type Country = {
   Name: string;
 };
 
+
+export type LogEntry = {
+  timestamp: number;
+  data: any;
+}
+
+
 export type Circuit = {
   Key: number;
   ShortName: string;

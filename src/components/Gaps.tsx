@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
 import { useSocket } from '../SocketContext.tsx'
 import { State } from '../../types/type'
-import { DriverContext } from '../driverContext'
+import { useDriver } from './DriverRow';
 
 const Gaps = () => {
 
   const state: State | undefined = useSocket();
-  let carNumber: number = useContext(DriverContext)
+  let carNumber: number = useDriver();
 
   let gapAhead = state?.timingDataF1[carNumber].IntervalToPositionAhead
   let gapToLeader = state?.timingDataF1[carNumber].GapToLeader
@@ -37,12 +37,17 @@ const Gaps = () => {
       lapTimeDiffToLeader = calculateTimeDiff(leadTime, state?.timingStats[carNumber].PersonalBestLapTime.Value);
   }
 
+  if (state.timingDataF1[carNumber].Stopped) {
+    return <div className="text-white">Retired</div>
+  }
+
+  //TODO: the second place should only show gapahead, now it's showing the same value twice
   return (
     <div className='flex-col w-20 text-white'>
       {state?.sessionInfo?.Type == "Race" ? (
         <>
           <div>{gapAhead?.Value.includes("LAP") ? null : gapAhead?.Value}</div>
-          <div>{gapToLeader?.includes("LAP") || gapToLeader == "" ? 'Leader' : gapToLeader}</div>
+          <div className="text-xs">{gapToLeader?.includes("LAP") || gapToLeader == "" ? 'Leader' : gapToLeader}</div>
         </>
       ) : <div>{lapTimeDiffToLeader == '+0.000' ? "Leader" : lapTimeDiffToLeader}</div>}
     </div>

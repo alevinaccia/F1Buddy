@@ -3,11 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import LeaderBoard from './components/LeaderBoard';
 import Map from './components/Map';
-import entry from '../example.json'
-import { emulateSocket } from './socketEmulator'
 import Header from './components/Header';
 import TeamRadioContainer from './components/TeamRadioContainer';
-import { SocketProvider } from './SocketContext.tsx';
+import { SocketProvider } from './SocketContext';
 
 declare global {
   interface Window {

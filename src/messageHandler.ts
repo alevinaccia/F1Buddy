@@ -12,7 +12,7 @@ const inflate = <T>(data: string): T => {
     );
 };
 
-// TODO put "object.keys..." into a function
+// TODO: put "object.keys..." into a function
 export const handleMessage = (message, state: Types.State): Types.State => {
     let data = {};
 
@@ -24,7 +24,6 @@ export const handleMessage = (message, state: Types.State): Types.State => {
             data[element.A[0]] = element.A[1];
         });
     }
-
     if (data["CarData.z"]) {
         state.carsData = inflate(data["CarData.z"]) as Types.CarsTelemetry;
     }

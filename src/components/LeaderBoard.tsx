@@ -94,14 +94,15 @@ const LeaderBoard = () => {
       </h2>
       <ul ref={parent}>
         {state &&
-          orderedList.map((carNumber, index) => {
+          orderedList.map((carNumber, position) => {
             return (
               <DriverRow
                 carTelemetry={
                   state.carsData?.Entries[0].Cars[carNumber].Channels
                 }
                 driverInfo={state.driversList?.[carNumber]}
-                index={index}
+                hasStopped={state.timingDataF1[carNumber].Stopped}
+                position={position}
                 key={carNumber}
               />
             );

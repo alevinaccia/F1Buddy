@@ -53,7 +53,7 @@ const CarDot = ({ rotation, centerX, centerY, driverInfo, inPit }) => {
         setTransform(newTransform);
     }, [pos.X, pos.Y, rotation, centerX, centerY]);
 
-    return (
+    return (!state.timingDataF1[driverInfo.RacingNumber].Stopped &&
         <g style={{ transition: "all 1s linear", transform }}>
             <circle r={160} fill={`#${driverInfo ? driverInfo.TeamColour : 'fefefe'}`}
             ></circle>
