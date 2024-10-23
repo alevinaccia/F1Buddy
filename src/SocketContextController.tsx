@@ -23,7 +23,7 @@ export class SocketContextController {
     if (this.socket) return this.socket;
 
     if (this.devMode) {
-      this.socket = new MockSocket();
+      this.socket = MockSocket.getInstance();
       return this.socket;
     } else {
       try {
@@ -50,12 +50,13 @@ export class SocketContextController {
   public loadFile = async (file: string) => {
     if (file == "") return;
     if (!this.devMode) return;
+    if (!(this.socket instanceof MockSocket)) return
+
     const lines = await fetch(this.sessionsLocation + file)
       .then(res => res.text())
       .then(data => data.split("\n"));
 
-    if (!(this.socket instanceof MockSocket)) return
-    this.socket.loadFile(lines.map((line) => {
+    const parsedFile: LogEntry[] = lines.map((line) => {
       try {
         const entry = JSON.parse(line);
         return {
@@ -65,9 +66,10 @@ export class SocketContextController {
       } catch (error) {
         console.error(error);
       }
-    }).filter(entry => entry !== undefined));
+    }).filter(entry => entry !== undefined);
 
-    const [fileStartTime, fileEndTime] = this.socket.initState();
+    const [fileStartTime, fileEndTime] = await this.socket.loadFile(parsedFile);
+
   }
 
   public setCursor(value: number): void {
@@ -78,6 +80,11 @@ export class SocketContextController {
   public togglePause() {
     if (this.devMode && this.socket instanceof MockSocket)
       this.socket.togglePause();
+  }
+
+  public setCursorBind(fn) {
+    if (this.devMode && this.socket instanceof MockSocket)
+      this.socket.setCursorBinding(fn);
   }
 
   public static getInstance = (): SocketContextController => {

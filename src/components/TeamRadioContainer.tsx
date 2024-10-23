@@ -33,6 +33,7 @@ const TeamRadioContainer = () => {
         }
     }
 
+    console.log(teamRadioList)
 
 
     return (
@@ -43,6 +44,7 @@ const TeamRadioContainer = () => {
                     teamRadioList
                         .sort((a, b) => new Date(a.Utc).getTime() - new Date(b.Utc).getTime())
                         .reverse()
+                        .slice(0, 10)
                         .map((e: Capture, index) => {
                             return <TeamRadio url={baseUrl + path + e.Path}
                                 driverInfo={state.driversList?.[e.RacingNumber]}

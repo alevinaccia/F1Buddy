@@ -70,7 +70,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }): JSX.Eleme
   return (
     <SocketContext.Provider value={state} >
       {(controller.isDevMode() &&
-        <DevMenu onFileChange={setSession} fileList={controller.getFileList()} setCursor={setCursor} togglePause={togglePause} />
+        <DevMenu controller={controller} />
       )}
       {children}
     </SocketContext.Provider>

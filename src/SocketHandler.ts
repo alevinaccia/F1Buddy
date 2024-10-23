@@ -4,28 +4,38 @@ import { LogEntry, SessionInfo } from "../types/type.ts";
 // TODO: Refactor this beautiful mess :)
 export class MockSocket {
 
+    private functionInstances: number = 0;
+    static instance: MockSocket | null = null;
     onmessage: ((event: MessageEvent) => void) | null = null;
     private loadedFile: LogEntry[];
     private cursor: number = 0;
     private sessionStartCursorValue: number = -1;
     private sessionEndCursorValue: number = -1;
-    private stop: boolean = false;
+    private isStopped: boolean = false;
     private pause: boolean = true;
+    private cursorBindFunction: (arg0: number) => void | undefined;
 
-    constructor() {
-        //this.simulateMessages();
+    private constructor() { }
+
+    static getInstance(): MockSocket {
+        if (this.instance == null) {
+            this.instance = new MockSocket();
+        } return this.instance;
     }
 
-    public loadFile(a: LogEntry[]) {
+    public async loadFile(a: LogEntry[]) {
         this.loadedFile = a;
         this.cursor = 0;
         this.sessionStartCursorValue = -1;
         this.sessionEndCursorValue = -1;
         this.pause = true;
-        this.stop = false;
+        this.isStopped = true;
+
+        this.updateCursorUI(true);
+        return await this.initState();
     }
 
-    public initState() {
+    private async initState() {
 
         const TOLLERANCE = 2 * 60 * 1000 //2 minutes in milliseconds
 
@@ -43,6 +53,7 @@ export class MockSocket {
 
                 if (!CURRENT_LINE_DATA) {
                     this.cursor++;
+                    this.updateCursorUI();
                     continue;
                 }
 
@@ -60,20 +71,36 @@ export class MockSocket {
                     }
                 }
 
-
                 this.sendStateAtCursorPosition()
                 this.cursor++;
             }
 
             this.sessionStartCursorValue = this.cursor;
 
-            fileEndTime = this.findSessionEndCursor();
+            fileEndTime = this.findSessionEndCursorValue();
         }
+
+        this.isStopped = false;
         this.simulateMessages();
         return [fileStartTime, fileEndTime];
     }
 
-    private findSessionEndCursor(): Date | undefined {
+    private updateCursorUI(init: boolean = false) {
+        if (init) {
+            if (this.cursorBindFunction)
+                this.cursorBindFunction(0)
+            return
+        }
+        const interval = this.sessionEndCursorValue - this.sessionStartCursorValue;
+        const offset = this.cursor - this.sessionStartCursorValue;
+        const normalizedValue = offset / interval;
+        const percentageValue = Math.floor(normalizedValue * 100);
+        if (this.cursorBindFunction) {
+            this.cursorBindFunction(percentageValue);
+        }
+    }
+
+    private findSessionEndCursorValue(): Date | undefined {
 
         let fileEndTime: Date | undefined;
         this.cursor = this.loadedFile.length - 1;
@@ -120,10 +147,19 @@ export class MockSocket {
         return data;
     }
 
+    public setCursorBinding(fn) {
+        this.cursorBindFunction = fn;
+    }
+
+    public isPaused(): boolean {
+        return this.pause;
+    }
+
     public setCursor(normalizedValue: number): void {
         const interval = this.sessionEndCursorValue - this.sessionStartCursorValue;
         const offset = Math.floor(interval * normalizedValue);
         this.cursor = this.sessionStartCursorValue + offset;
+        this.updateCursorUI();
         //FIXME: works but slow af
         for (let i = this.sessionStartCursorValue; i < this.cursor; i++) {
             this.sendStateAtIndex(i);
@@ -136,37 +172,39 @@ export class MockSocket {
 
     private sendStateAtIndex(index: number) {
         const data = JSON.stringify(this.loadedFile[index].data);
-        this.sendMessage(data)
+        this.sendMessage(data);
     }
 
     private sendStateAtCursorPosition() {
         const data = JSON.stringify(this.loadedFile[this.cursor].data);
-        this.sendMessage(data)
+        this.sendMessage(data);
     }
-
 
     private sendMessage(data: string) {
         const mockMessage = { data: data };
         if (this.onmessage) {
-            this.onmessage(mockMessage as MessageEvent); // Simulate receiving a message
+            this.onmessage(mockMessage as MessageEvent);
         }
     }
 
-
     private async simulateMessages() {
-
-        while (!this.stop && this.cursor < this.sessionEndCursorValue) {
+        this.functionInstances++;
+        if (this.functionInstances > 1) return
+        while (!this.isStopped && this.cursor < this.sessionEndCursorValue) {
             if (!this.pause) {
                 this.sendStateAtCursorPosition();
+                this.updateCursorUI();
                 this.cursor++;
                 const currentFrameTime = this.loadedFile[this.cursor].timestamp;
                 const nextFrameTime = this.loadedFile[this.cursor + 1].timestamp;
                 const timeToNextFrame = nextFrameTime - currentFrameTime;
                 await this.delay(timeToNextFrame);
             } else {
-                await this.delay(100)
+                await this.delay(100);
             }
         }
+        this.functionInstances--;
+        this.isStopped = false;
     }
 
     private delay(ms: number): Promise<void> {
