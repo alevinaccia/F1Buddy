@@ -17,10 +17,6 @@ const DevMenu = ({ controller }) => {
         setIsPlaying(!isPlaying);
     }
 
-    useEffect(() => {
-        console.log(cursorValue)
-    }, [cursorValue])
-
     return (
         <div>
             <div className="flex flex-row text-white">

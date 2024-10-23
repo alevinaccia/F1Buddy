@@ -6,7 +6,6 @@ const TeamRadio = ({ url, driverInfo }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
     const [transcriptText, setTranscriptText] = useState('');
-    const [mounted, setMounted] = useState<boolean>(false); //find a better way to understand if it's first mount
 
     const togglePlayPause = () => {
         if (audioRef.current) {
@@ -41,27 +40,6 @@ const TeamRadio = ({ url, driverInfo }) => {
 
     }, []);
 
-    useEffect(() => {
-        if (!import.meta.env.VITE_ASSEMBLY_API_KEY) return
-
-        const client = new AssemblyAI({
-            apiKey: import.meta.env.VITE_ASSEMBLY_API_KEY
-        })
-
-        const run = async () => {
-            const transcript = await client.transcripts.transcribe({ audio_url: url });
-            if (transcript.text)
-                setTranscriptText(transcript.text);
-        }
-
-        try {
-            if (!mounted) // run(); 
-                setMounted(true);
-        } catch (error) {
-            setMounted(true);
-        }
-
-    }, [])
 
     const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (audioRef.current) {

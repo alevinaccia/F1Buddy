@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSocket } from '../SocketContext.tsx'
 import TeamRadio from './TeamRadio';
 import { Capture, State } from '../../types/type';
@@ -32,9 +32,6 @@ const TeamRadioContainer = () => {
             statusStyle = 'border-yellow-300'
         }
     }
-
-    console.log(teamRadioList)
-
 
     return (
         <div className={`border-4 p-2 ${statusStyle}`}>
